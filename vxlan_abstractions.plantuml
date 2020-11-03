@@ -7,9 +7,9 @@ title Networking concepts mapping - data model
 
 legend top
 |Colour| Domain |
-|<#Gold>| OpenStack abstraction|
-|<#HotPink>| Nuage abstraction|
-|<#Lime>| WBX abstraction|
+|<#Gold>| OpenStack abstraction - API objects|
+|<#HotPink>| Nuage abstraction - API objects|
+|<#Lime>| WBX abstraction - configuration objects|
 |<#Cyan>| EVPN|
 |<#DeepSkyBlue>| VXLAN|
 |<#Khaki>| SR-IOV on compute|
