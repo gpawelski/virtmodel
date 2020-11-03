@@ -1,0 +1,110 @@
+@startuml
+allow_mixing
+skinparam handwritten true
+skinparam defaultTextAlignment center
+
+title Networking concepts mapping - data model
+
+legend top
+|Colour| Domain |
+|<#Gold>| OpenStack abstraction|
+|<#HotPink>| Nuage abstraction|
+|<#Lime>| WBX abstraction|
+|<#Cyan>| EVPN|
+|<#DeepSkyBlue>| VXLAN|
+|<#Khaki>| SR-IOV on compute|
+|<#Ivory>| Ethernet on WBX|
+endlegend
+
+rectangle L3_VPN #Cyan [
+EVPN
+L3 VPN]
+
+rectangle L2_VPN #Cyan [
+EVPN
+L2 VPN
+]
+
+together {
+  rectangle VNI_L2 #DeepSkyBlue [
+  VNI
+  (L2)
+  ]
+  rectangle VNI_L3 #DeepSkyBlue [
+  VNI
+  (L3)
+  ]
+  rectangle VLAN #Ivory
+  rectangle eth_port #Ivory
+}
+
+rectangle SAP #Lime
+
+together {
+  rectangle SDP_L2 #Lime [
+  SDP
+  (L2)
+  ]
+  rectangle SDP_L3 #Lime [
+  SDP
+  (L3)
+  ]
+}
+
+rectangle VPRN #Lime
+together {
+  rectangle VPLS #Lime [
+  VPLS
+  (isolated)
+  ]
+  rectangle rVPLS #Lime [
+  VPLS
+  routed
+  ]
+  rectangle tVPLS #Lime [
+  VPLS
+  transit
+  ]
+}
+
+together {
+rectangle vPort #HotPink
+rectangle L2_Domain #HotPink
+rectangle L3_Domain #HotPink
+rectangle Policy #HotPink
+}
+
+together {
+rectangle Network #Gold
+rectangle Subnet #Gold
+rectangle Router #Gold
+rectangle Port #Gold
+rectangle VF #Khaki
+rectangle SecurityGroup #Gold
+}
+
+
+SAP "N" *-- "1" eth_port
+SAP "N" *-- "1" VLAN
+SDP_L2 "1" *-- "1" VNI_L2
+SDP_L3 "1" *-- "1" VNI_L3
+VPRN "1" *-- "N" rVPLS
+VPRN "1" *-- "1" tVPLS : symmetric IRB
+VPLS "1" *-- "N" SAP
+VPLS "1" *-- "N" SDP_L2
+rVPLS "1" *-- "N" SAP
+rVPLS "1" *-- "1" SDP_L2
+tVPLS "1" *-- "1" SDP_L3
+L2_VPN  -right[dashed]-> VPLS
+L3_VPN -right[dashed]-> VPRN
+vPort -[dashed]-> SAP
+L2_Domain -[dashed]-> VPLS
+L3_Domain -[dashed]-> VPRN
+Network -[dashed]-> L2_Domain
+Subnet -[dashed]-> L2_Domain
+Router -[dashed]-> L3_Domain
+SecurityGroup -[dashed]-> Policy
+Port -[dashed]-> VF
+VF -[dashed]-> vPort : connected
+
+@enduml
