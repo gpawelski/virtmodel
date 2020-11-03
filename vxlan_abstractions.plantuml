@@ -90,9 +90,9 @@ SDP_L2 "1" *-- "1" VNI_L2
 SDP_L3 "1" *-- "1" VNI_L3
 VPRN "1" *-- "N" rVPLS
 VPRN "1" *-- "1" tVPLS : symmetric IRB
-VPLS "1" *-- "1" SAP
+VPLS "1" *-- "N" SAP
 VPLS "1" *-- "1" SDP_L2
-rVPLS "1" *-- "1" SAP
+rVPLS "1" *-- "N" SAP
 rVPLS "1" *-- "1" SDP_L2
 tVPLS "1" *-- "1" SDP_L3
 L2_VPN  -right[dashed]-> VPLS
