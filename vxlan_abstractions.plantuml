@@ -1,12 +1,12 @@
 @startuml
 allow_mixing
-skinparam handwritten true
+'skinparam handwritten true
 skinparam defaultTextAlignment center
 
-title Networking concepts mapping - data model
+title Networking concepts: object mapping - data model
 
 legend top
-|Colour| Domain |
+|Colour| Where objects exist |
 |<#Gold>| OpenStack abstraction - API objects|
 |<#HotPink>| Nuage abstraction - API objects|
 |<#Lime>| WBX abstraction - configuration objects|
@@ -15,6 +15,7 @@ legend top
 |<#Khaki>| SR-IOV on compute|
 |<#Ivory>| Ethernet on WBX|
 endlegend
+
 
 rectangle L3_VPN #Cyan [
 EVPN
@@ -67,21 +68,27 @@ together {
   ]
 }
 
+
 together {
-rectangle vPort #HotPink
-rectangle L2_Domain #HotPink
-rectangle L3_Domain #HotPink
-rectangle Policy #HotPink
+  rectangle nSubnet #HotPink [
+  Subnet ]
+  rectangle L2_Domain #HotPink
+  rectangle L3_Domain #HotPink
+  rectangle vPort #HotPink
 }
 
 together {
-rectangle Network #Gold
-rectangle Subnet #Gold
-rectangle Router #Gold
-rectangle Port #Gold
-rectangle VF #Khaki
-rectangle SecurityGroup #Gold
+  rectangle SecurityGroup #Gold
+  rectangle Policy #HotPink
 }
+
+together {
+  rectangle Port #Gold
+  rectangle Subnet #Gold
+  rectangle Router #Gold
+  rectangle VF #Khaki
+}
+rectangle Network #Gold
 
 
 SAP "N" *-- "1" eth_port
@@ -95,16 +102,17 @@ VPLS "1" *-- "1" SDP_L2
 rVPLS "1" *-- "N" SAP
 rVPLS "1" *-- "1" SDP_L2
 tVPLS "1" *-- "1" SDP_L3
-L2_VPN  -right[dashed]-> VPLS
-L3_VPN -right[dashed]-> VPRN
-vPort -[dashed]-> SAP
-L2_Domain -[dashed]-> VPLS
-L3_Domain -[dashed]-> VPRN
-Network -[dashed]-> L2_Domain
-Subnet -[dashed]-> L2_Domain
-Router -[dashed]-> L3_Domain
-SecurityGroup -[dashed]-> Policy
-Port -[dashed]-> VF
-VF -[dashed]-> vPort : connected
+L2_VPN  "1" -right[dashed]-> "1" VPLS
+L3_VPN "1" -right[dashed]-> "1" VPRN
+vPort "1" -[dashed]-> "1" SAP
+L2_Domain "1" -[dashed]-> "1" VPLS
+L3_Domain "1" -[dashed]-> "1" VPRN
+Router  -[dotted]->  L3_Domain : no direct mapping \n just similar concepts
+SecurityGroup -[dotted]-> Policy : no direct mapping \n just similar concepts
+Port "1" -[dashed]-> "1" VF
+VF "1" -[dashed]-> "1" vPort : connected
+nSubnet "1" -[dashed]-> "1" L2_Domain
+nSubnet "N" -[dashed]-> "1" L3_Domain
+Subnet "1" -[dashed]-> "1" nSubnet
 
 @enduml
